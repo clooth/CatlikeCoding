@@ -9,6 +9,9 @@ public class Grid : MonoBehaviour {
     // Vertices used in the grid
     private Vector3[] vertices;
 
+    // The mesh for rendering the grid
+    private Mesh mesh;
+
     // Called when the component is being loaded
     private void Awake() {
         StartCoroutine(Generate());
@@ -16,11 +19,32 @@ public class Grid : MonoBehaviour {
 
     // Generate the grid vertices
     private IEnumerator Generate() {
+        // Delay for debugging
         WaitForSeconds wait = new WaitForSeconds(0.05f);
+
+        // Create an empty mesh for the grid
+        GetComponent<MeshFilter>().mesh = mesh = new Mesh();
+
+        // Generate grid vertices
         vertices = new Vector3[(width + 1) * (height + 1)];
         for (int i = 0, y = 0; y <= height; y++) {
             for (int x = 0; x <= width; x++, i++) {
                 vertices[i] = new Vector3(x, y);
+            }
+        }
+
+        // Set mesh vertices to be the generated ones
+        mesh.vertices = vertices;
+
+        // Generate triangles for the grid cells
+        int[] triangles = new int[width * height * 6];
+        for (int ti = 0, vi = 0, y = 0; y < height; y++, vi++) {
+            for (int x = 0; x < width; x++, ti += 6, vi++) {
+                triangles[ti] = vi;
+                triangles[ti + 3] = triangles[ti + 2] = vi + 1;
+                triangles[ti + 4] = triangles[ti + 1] = vi + width + 1;
+                triangles[ti + 5] = vi + width + 2;
+                mesh.triangles = triangles;
                 yield return wait;
             }
         }
