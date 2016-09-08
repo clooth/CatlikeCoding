@@ -36,6 +36,9 @@ public class Fractal : MonoBehaviour {
 	  gameObject.AddComponent<MeshFilter>().mesh = mesh;
     gameObject.AddComponent<MeshRenderer>().material = material;
     
+    // Lerp a color depending on the depth of the fractal
+    GetComponent<MeshRenderer>().material.color = Color.Lerp(Color.white, Color.yellow, (float)currentDepth / maximumDepth);
+
     if (currentDepth < maximumDepth) {
       StartCoroutine(CreateChildren());
     }
