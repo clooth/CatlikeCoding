@@ -7,4 +7,10 @@ public class Stuff : MonoBehaviour {
   void Awake() {
     Body = GetComponent<Rigidbody>();
   }
+
+  void OnTriggerEnter(Collider enteredCollider) {
+    if (enteredCollider.CompareTag("Kill Zone")) {
+      Destroy(gameObject);
+    }
+  }
 }
